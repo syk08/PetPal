@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pet_pal/widgets/navbar.dart';
 import '../core/util.dart';
 import '../widgets/card.dart';
 
@@ -12,22 +14,29 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      GoRouter.of(context).go('/dashboard');
+    } else if (index == 1) {
+      GoRouter.of(context).go('/mypets');
+    } else if (index == 2) {
+      GoRouter.of(context).go('/posts');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.Yellow,
-        elevation: 0,
-        leading: Container(
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          child: SvgPicture.asset('assets/images/menu.svg'),
-        ),
-        actions: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 15),
-            child: SvgPicture.asset('assets/images/BellAndNotification.svg'),
-          ),
-        ],
+      appBar: Navbar(
+        title: 'Dashboard',
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
       backgroundColor: Colors.white,
       body: CustomScrollView(
@@ -56,14 +65,20 @@ class _DashboardState extends State<Dashboard> {
           SliverGrid.count(
             crossAxisCount: 2,
             children: <Widget>[
-              card(context, 'MyProfile', 'svg', 'My Profile','mypets'),
-              card(context, 'MyPets', 'svg', 'My Pets','mypets'),
-              card(context, 'Appointments', 'svg', 'Appointments','mypets'),
-              card(context, 'MedicalRecords', 'svg', 'Medical Records','mypets'),
-              card(context, 'Notifications', 'svg', 'Notifications','mypets')
+              card(context, 'MyProfile', 'svg', 'My Profile', 'mypets'),
+              card(context, 'MyPets', 'svg', 'My Pets', 'mypets'),
+              card(context, 'Appointments', 'svg', 'Appointments', 'mypets'),
+              card(context, 'MedicalRecords', 'svg', 'Medical Records',
+                  'mypets'),
+              card(context, 'Notifications', 'svg', 'Notifications', 'mypets'),
+              card(context, 'MyPets', 'svg', 'Community', 'posts'),
             ],
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavbar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }
