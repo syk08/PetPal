@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pet_pal/widgets/navbar.dart';
-import '../widgets/card.dart';
+import 'dart:io';
 
 class PostsPage extends StatefulWidget {
   static const routeName = '/posts';
@@ -14,16 +16,36 @@ class PostsPage extends StatefulWidget {
 
 class _PostsPageState extends State<PostsPage> {
   final TextEditingController _controller = TextEditingController();
-  List<String> posts = [
-    "Lost dog near Central Park",
-    "Looking to adopt a cat",
-    "Found a puppy near the river",
+  List<Map<String, dynamic>> posts = [
+    {"text": "Lost dog near Central Park", "image": null, "comments": []},
+    {"text": "Looking to adopt a cat", "image": null, "comments": []},
+    {"text": "Found a puppy near the river", "image": null, "comments": []},
   ];
+
+  File? _image;
 
   void _addPost() {
     setState(() {
-      posts.add(_controller.text);
+      posts.add({"text": _controller.text, "image": _image, "comments": []});
       _controller.clear();
+      _image = null;
+    });
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
+  void _addComment(int index, String comment) {
+    setState(() {
+      posts[index]['comments'].add(comment);
     });
   }
 
@@ -46,6 +68,7 @@ class _PostsPageState extends State<PostsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 235, 121),
       appBar: Navbar(
         title: 'Community',
         currentIndex: _selectedIndex,
@@ -60,27 +83,108 @@ class _PostsPageState extends State<PostsPage> {
               decoration: InputDecoration(
                 labelText: 'Make a post!',
                 border: OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.photo,
+                  ),
+                  onPressed: _pickImage,
+                ),
               ),
             ),
             SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _addPost,
-              child: Text(
-                'Post',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 255, 222, 36),
-                  foregroundColor:
-                      Colors.white // Change the background color of the button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _addPost,
+                  child: Text(
+                    'Post',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 247, 175, 68),
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                SizedBox(width: 10),
+              ],
             ),
             Expanded(
               child: ListView.builder(
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(posts[index]),
+                  return Card(
+                    color: Color.fromARGB(255, 247, 175, 68),
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (posts[index]['image'] != null)
+                            Image.file(posts[index]['image']),
+                          Text(posts[index]['text'],
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.thumb_up),
+                                onPressed: () {
+                                  // Handle like action
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.comment),
+                                onPressed: () {
+                                  // Show comment input dialog
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      final TextEditingController
+                                          _commentController =
+                                          TextEditingController();
+                                      return AlertDialog(
+                                        title: Text('Add a comment'),
+                                        content: TextField(
+                                          controller: _commentController,
+                                          decoration: InputDecoration(
+                                            labelText: 'Comment',
+                                          ),
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _addComment(index,
+                                                  _commentController.text);
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Add'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          if (posts[index]['comments'].isNotEmpty)
+                            ExpansionTile(
+                              title: Text('View all comments'),
+                              children: posts[index]['comments']
+                                  .map<Widget>((comment) =>
+                                      ListTile(title: Text(comment)))
+                                  .toList(),
+                              backgroundColor:
+                                  Color.fromARGB(255, 226, 126, 38),
+                              collapsedBackgroundColor:
+                                  Color.fromARGB(255, 246, 192, 110),
+                            ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               ),

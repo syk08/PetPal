@@ -1,12 +1,13 @@
 name: pet_pal
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
+  sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
+  image_picker: ^1.1.2
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
@@ -28,8 +29,8 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets:
-   - assets/
-   - assets/images/
+    - assets/
+    - assets/images/
   fonts:
     - family: Pacifico
       fonts:
