@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_pal/screens/login_reg/reset_password.dart';
+import 'package:pet_pal/screens/login_reg/signin_screen.dart';
+import 'package:pet_pal/screens/login_reg/signup_screen.dart';
 import '../screens/dashboard.dart';
 import '../screens/home.dart';
 import '../screens/mypets.dart';
@@ -10,6 +13,9 @@ import '../screens/vetClinic/all_vets.dart';
 import '../../global_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+const String signin = '/signin';
+const String signup = '/signup';
+const String reset = '/reset';
 const String homeRoute = '/home';
 const String dashboardRoute = '/dashboard';
 const String myPetsRoute = '/mypets';
@@ -25,9 +31,28 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 // Define the GoRouter
 final GoRouter router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: homeRoute,
+  initialLocation: signin,
   debugLogDiagnostics: true,
   routes: <RouteBase>[
+        GoRoute(
+      path: signin,
+      builder: (BuildContext context, GoRouterState state) {
+        return SignInScreen();
+      },
+    ),
+    GoRoute(
+      path: signup,
+      builder: (BuildContext context, GoRouterState state) {
+        return SignUpScreen();
+      },
+    ),
+    GoRoute(
+      path: reset,
+      builder: (BuildContext context, GoRouterState state) {
+        return ResetPassword();
+      },
+    ),
+
     GoRoute(
       path: homeRoute,
       builder: (BuildContext context, GoRouterState state) {

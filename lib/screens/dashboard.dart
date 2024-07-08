@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,6 +22,33 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
+  User? _user;
+  String? _userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+  Future<void> _getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _user = user;
+      });
+      await _getUserDetails(user.uid);
+    }
+  }
+
+  Future<void> _getUserDetails(String uid) async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('UserData').doc(uid).get();
+    if (userDoc.exists) {
+      setState(() {
+        _userName = userDoc['username'];
+      });
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -37,10 +66,10 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _userName == null ? CircularProgressIndicator() : Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 235, 121),
       appBar: Navbar(
-        title: 'Dashboard',
+        title: 'Hello, ${_userName}',
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
