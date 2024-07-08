@@ -25,10 +25,14 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SvgPicture.asset('assets/images/Logo.svg'),
+              Icon(
+                Icons.pets,
+                size: 120,
+                color: Colors.white,
+              ),
               SizedBox(height: 15),
               Text(
-                'Pet Pal',
+                'PetPal',
                 style: TextStyle(
                     fontFamily: 'Pacifico', color: Colors.white, fontSize: 32),
               )
