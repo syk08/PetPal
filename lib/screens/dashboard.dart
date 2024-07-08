@@ -42,7 +42,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _getUserDetails(String uid) async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('UserData').doc(uid).get();
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('UserData').doc(uid).get();
     if (userDoc.exists) {
       setState(() {
         _userName = userDoc['username'];
@@ -66,67 +67,82 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return _userName == null ? CircularProgressIndicator() : Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 235, 121),
-      appBar: Navbar(
-        title: 'Hello, ${_userName}',
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-      drawer: ProfileDrawer(),
-      body: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.all(10),
-            height: MediaQuery.of(context).size.height / 6,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                height: MediaQuery.of(context).size.height / 6,
-                aspectRatio: 16 / 12,
-                viewportFraction: 0.4,
-                enlargeCenterPage: true,
-              ),
-              items: [
-                SliderWidget(
-                    context: context,
-                    title: 'Profile',
-                    icon: Icons.person,
-                    route: '/profile'),
-                SliderWidget(
-                    context: context,
-                    title: 'My Pets',
-                    icon: Icons.pets,
-                    route: '/mypets'),
-                SliderWidget(
-                    context: context,
-                    title: 'Community',
-                    icon: Icons.group,
-                    route: '/posts'),
-                SliderWidget(
-                    context: context,
-                    title: 'Adopt',
-                    icon: Icons.favorite,
-                    route: '/adopt'),
-                SliderWidget(
-                    context: context,
-                    title: 'Lost & Found',
-                    icon: Icons.search,
-                    route: '/lostfound'),
-                SliderWidget(
-                    context: context,
-                    title: 'Virtual Vet',
-                    icon: Icons.local_hospital,
-                    route: '/vet'),
-              ],
+    return _userName == null
+        ? CircularProgressIndicator()
+        : Scaffold(
+            backgroundColor: Color.fromARGB(255, 147, 224, 219),
+            appBar: Navbar(
+              title: 'Hello, ${_userName}',
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
             ),
-          ),
-          // Other content of the dashboard goes here...
-        ],
-      ),
-      bottomNavigationBar: BottomNavbar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-    );
+            drawer: ProfileDrawer(),
+            body: Stack(children: [
+              // Background Image
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/home2.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    height: MediaQuery.of(context).size.height / 6,
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: MediaQuery.of(context).size.height / 6,
+                        aspectRatio: 16 / 12,
+                        viewportFraction: 0.4,
+                        enlargeCenterPage: true,
+                      ),
+                      items: [
+                        SliderWidget(
+                            context: context,
+                            title: 'Profile',
+                            icon: Icons.person,
+                            route: '/profile'),
+                        SliderWidget(
+                            context: context,
+                            title: 'My Pets',
+                            icon: Icons.pets,
+                            route: '/mypets'),
+                        SliderWidget(
+                            context: context,
+                            title: 'Community',
+                            icon: Icons.group,
+                            route: '/posts'),
+                        SliderWidget(
+                            context: context,
+                            title: 'Adopt',
+                            icon: Icons.favorite,
+                            route: '/adopt'),
+                        SliderWidget(
+                            context: context,
+                            title: 'Lost & Found',
+                            icon: Icons.search,
+                            route: '/lostfound'),
+                        SliderWidget(
+                            context: context,
+                            title: 'Virtual Vet',
+                            icon: Icons.local_hospital,
+                            route: '/vet'),
+                      ],
+                    ),
+                  ),
+                  // Other content of the dashboard goes here...
+                ],
+              ),
+            ]),
+            bottomNavigationBar: BottomNavbar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+            ),
+          );
   }
 }

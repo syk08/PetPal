@@ -23,7 +23,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
             fontSize: 30,
             fontWeight: FontWeight.w500),
       ),
-      backgroundColor: Color.fromARGB(255, 247, 175, 68),
+      backgroundColor: Color.fromARGB(255, 157, 208, 232),
       centerTitle: true,
     );
   }
@@ -46,7 +46,7 @@ class BottomNavbar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      backgroundColor: Color.fromARGB(255, 247, 175, 68),
+      backgroundColor: Color.fromARGB(255, 157, 208, 232),
       items: const [
         BottomNavigationBarItem(
           icon: Icon(

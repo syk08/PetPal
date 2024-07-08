@@ -6,8 +6,6 @@ import 'dashboard.dart';
 import '../core/util.dart';
 
 class Home extends StatefulWidget {
-  
-
   Home({Key? key}) : super(key: key);
 
   _HomeState createState() => _HomeState();
@@ -21,13 +19,12 @@ class _HomeState extends State<Home> {
         GoRouter.of(context).go('/dashboard');
       },
       child: Scaffold(
-        backgroundColor: CustomColors.Yellow,
+        backgroundColor: Color.fromARGB(255, 218, 175, 243),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              
               SvgPicture.asset('assets/images/Logo.svg'),
               SizedBox(height: 15),
               Text(

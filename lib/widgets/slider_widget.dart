@@ -22,7 +22,7 @@ class SliderWidget extends StatelessWidget {
         GoRouter.of(context).go(route);
       },
       child: Card(
-        color: Color.fromARGB(255, 247, 175, 68),
+        color: Color.fromARGB(255, 157, 208, 232),
         margin: EdgeInsets.symmetric(horizontal: 5.0),
         child: Container(
           alignment: Alignment.center,
@@ -32,7 +32,7 @@ class SliderWidget extends StatelessWidget {
               Icon(
                 icon,
                 size: 50,
-                color: Color.fromARGB(255, 255, 236, 131),
+                color: Colors.white,
               ),
               SizedBox(height: 10),
               Text(
