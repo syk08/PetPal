@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../global_state.dart';
+import '../../widgets/VetClinic/chatPopup.dart';
+import '../../widgets/VetClinic/subscribePopup.dart';
+
 
 class VetClinic extends StatefulWidget {
   @override
@@ -53,9 +56,9 @@ class _VetClinicState extends State<VetClinic> {
               SizedBox(height: 10), // Add spacing between cards
               buildCard(context, 'Vets Near You', '/vets_near'),
               SizedBox(height: 10), // Add spacing between cards
-              buildCard(context, 'Subscribe', '/allvet'),
+              buildCardPopup(context, 'Subscribe'),
               SizedBox(height: 10), // Add spacing between cards
-              buildCard(context, 'Chat With Your Vet', '/allvet'),
+              ChatCardPopup(context, 'Chat With Your Vet'),
               SizedBox(height: 100),
             ],
           ),
