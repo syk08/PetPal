@@ -62,6 +62,8 @@ class _DashboardState extends State<Dashboard> {
       GoRouter.of(context).go('/mypets');
     } else if (index == 2) {
       GoRouter.of(context).go('/posts');
+    } else if (index == 3) {
+      GoRouter.of(context).go('/store');
     }
   }
 
@@ -119,14 +121,19 @@ class _DashboardState extends State<Dashboard> {
                             route: '/posts'),
                         SliderWidget(
                             context: context,
+                            title: 'Pet Mart',
+                            icon: Icons.store_rounded,
+                            route: '/store'),
+                        SliderWidget(
+                            context: context,
                             title: 'Adopt',
                             icon: Icons.favorite,
-                            route: '/adopt'),
+                            route: '/posts'),
                         SliderWidget(
                             context: context,
                             title: 'Lost & Found',
                             icon: Icons.search,
-                            route: '/lostfound'),
+                            route: '/posts'),
                         SliderWidget(
                             context: context,
                             title: 'Virtual Vet',

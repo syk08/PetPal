@@ -3,10 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_pal/screens/login_reg/reset_password.dart';
 import 'package:pet_pal/screens/login_reg/signin_screen.dart';
 import 'package:pet_pal/screens/login_reg/signup_screen.dart';
+import 'package:pet_pal/screens/profile.dart';
 import '../screens/dashboard.dart';
 import '../screens/home.dart';
 import '../screens/mypets.dart';
 import '../screens/posts.dart';
+import '../screens/store.dart';
+//import '../screens/cart.dart';
 import '../screens/vetClinic/vet_clinic.dart';
 import '../screens/vetClinic/vets_near.dart';
 import '../screens/vetClinic/all_vets.dart';
@@ -23,6 +26,9 @@ const String postsRoute = '/posts';
 const String virtualVet = '/vet';
 const String vetsNearRoute = '/vets_near';
 const String allvetroute = '/allvet';
+const String storeRoute = '/store';
+const String cartRoute = '/cart';
+const String profileRoute = '/profile';
 
 // Create a global key for the navigator
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -34,7 +40,7 @@ final GoRouter router = GoRouter(
   initialLocation: signin,
   debugLogDiagnostics: true,
   routes: <RouteBase>[
-        GoRoute(
+    GoRoute(
       path: signin,
       builder: (BuildContext context, GoRouterState state) {
         return SignInScreen();
@@ -83,6 +89,24 @@ final GoRouter router = GoRouter(
         return VetClinic();
       },
     ),
+    GoRoute(
+      path: storeRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return StorePage();
+      },
+    ),
+    GoRoute(
+      path: profileRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return ProfilePage();
+      },
+    ),
+    // GoRoute(
+    //   path: cartRoute,
+    //   builder: (BuildContext context, GoRouterState state) {
+    //     return CartPage();
+    //   },
+    // ),
     GoRoute(
       path: vetsNearRoute,
       builder: (BuildContext context, GoRouterState state) {

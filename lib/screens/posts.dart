@@ -62,6 +62,8 @@ class _PostsPageState extends State<PostsPage> {
       GoRouter.of(context).go('/mypets');
     } else if (index == 2) {
       GoRouter.of(context).go('/posts');
+    } else if (index == 3) {
+      GoRouter.of(context).go('/store');
     }
   }
 

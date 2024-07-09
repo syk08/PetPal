@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_pal/screens/cart.dart';
 
 class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -25,6 +26,19 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: Color.fromARGB(255, 157, 208, 232),
       centerTitle: true,
+      actions: [
+        IconButton(
+          icon: Icon(Icons.shopping_cart),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CartPage(),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -47,6 +61,8 @@ class BottomNavbar extends StatelessWidget {
       currentIndex: currentIndex,
       onTap: onTap,
       backgroundColor: Color.fromARGB(255, 157, 208, 232),
+      selectedItemColor: Colors.white, // Set the color for selected item
+      unselectedItemColor: Colors.white70,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(
@@ -68,6 +84,13 @@ class BottomNavbar extends StatelessWidget {
             color: Colors.white,
           ),
           label: 'Community',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.store,
+            color: Colors.white,
+          ),
+          label: 'PetMart',
         ),
       ],
     );

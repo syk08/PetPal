@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pet_pal/cartmodel.dart';
+import 'package:provider/provider.dart';
 import 'core/util.dart';
 import 'core/router.dart';
 
@@ -18,14 +20,12 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  
-
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        // statusBarColor: Colors.transparent, // top bar color
-      ),
+          // statusBarColor: Colors.transparent, // top bar color
+          ),
     );
     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
     super.initState();
@@ -33,13 +33,16 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        canvasColor: CustomColors.Yellow,
-        fontFamily: 'Poppins',
+    return ChangeNotifierProvider(
+      create: (context) => CartModel(),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          canvasColor: Color.fromARGB(255, 157, 208, 232),
+          fontFamily: 'Poppins',
+        ),
+        routerConfig: router,
       ),
-     routerConfig: router,
     );
   }
 }
