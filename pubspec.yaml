@@ -24,6 +24,7 @@ dependencies:
   firebase_auth: ^5.1.1
   cloud_firestore: ^5.0.2
   flutter_bkash: ^0.2.0
+  firebase_storage: ^12.1.1
 
 dev_dependencies:
   flutter_test:

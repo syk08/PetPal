@@ -24,6 +24,7 @@ class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   User? _user;
   String? _userName;
+  List<Map<String, dynamic>>? _images;
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _DashboardState extends State<Dashboard> {
         _user = user;
       });
       await _getUserDetails(user.uid);
+      await _getImages();
     }
   }
 
@@ -49,6 +51,19 @@ class _DashboardState extends State<Dashboard> {
         _userName = userDoc['username'];
       });
     }
+  }
+
+  Future<void> _getImages() async {
+    QuerySnapshot postQuery =
+        await FirebaseFirestore.instance.collection('images').get();
+    List<Map<String, dynamic>> fetchedPosts = postQuery.docs.map((doc) {
+      return {
+        'imageURL': doc['imageUrl'],
+      };
+    }).toList();
+    setState(() {
+      _images = fetchedPosts;
+    });
   }
 
   void _onItemTapped(int index) {
@@ -143,6 +158,42 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                   // Other content of the dashboard goes here...
+                  Container(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('images')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        var images = snapshot.data!.docs;
+
+                        return Expanded(
+                          child: ListView(
+                            children: snapshot.data!.docs
+                                .map((DocumentSnapshot document) {
+                              Map<String, dynamic> data =
+                                  document.data()! as Map<String, dynamic>;
+                              return ListTile(
+                                title: Text(
+                                  data['imageUrl'].toString(),
+                                  //style: Theme.of(context).textTheme.headline1,
+                                ),
+                                subtitle: Image(
+                                  image: NetworkImage(data[
+                                      'imageUrl']), // ----------- the line that should change
+                                  width: 300,
+                                  height: 300,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ]),
