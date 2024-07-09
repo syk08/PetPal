@@ -13,6 +13,9 @@ import '../screens/store.dart';
 import '../screens/vetClinic/vet_clinic.dart';
 import '../screens/vetClinic/vets_near.dart';
 import '../screens/vetClinic/all_vets.dart';
+import '../screens/vetClinic/bkash_sub.dart';
+import '../screens/vetClinic/chat/WhatsappChat.dart';
+import '../screens/vetClinic/chat/ProfilePageWhatsapp.dart';
 import '../../global_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -29,7 +32,9 @@ const String allvetroute = '/allvet';
 const String storeRoute = '/store';
 const String cartRoute = '/cart';
 const String profileRoute = '/profile';
-
+const String chatview = '/chat';
+const String profileChat= '/profileChat';
+const String bkash_pay='/bkashsub';
 // Create a global key for the navigator
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -173,6 +178,30 @@ final GoRouter router = GoRouter(
             }
           },
         );
+      },
+    ),
+    GoRoute(
+      path: chatview,
+      builder: (BuildContext context, GoRouterState state) {
+        final args = state.extra as Map<String, dynamic>;
+        return WhatsappChat(path: args['path'], name: args['name']);
+      },
+    ),
+    GoRoute(
+      path: profileChat,
+      builder: (BuildContext context, GoRouterState state) {
+        final args = state.extra as Map<String, dynamic>;
+        
+         return Theme(
+      data: ThemeData.dark(useMaterial3: false),
+      child: ProfilePageWhatsapp(path: args['path'], name: args['name']),
+    );
+      },
+    ),
+    GoRoute(
+      path: bkash_pay,
+      builder: (BuildContext context, GoRouterState state) {
+        return bkashSub(title:"Bkash Payment");
       },
     ),
   ],
