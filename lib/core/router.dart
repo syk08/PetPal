@@ -116,7 +116,7 @@ final GoRouter router = GoRouter(
       path: vetsNearRoute,
       builder: (BuildContext context, GoRouterState state) {
         return FutureBuilder<void>(
-          future: initializeLocationData(),
+          future: globalState.getNearbyLocations(2000),
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Scaffold(
@@ -209,7 +209,7 @@ final GoRouter router = GoRouter(
 
 Future<void> initializeLocationData() async {
   await requestLocationPermission();
-  //await globalState.setCurrentLocation();
+  await globalState.setCurrentLocation();
   await globalState.getNearbyLocations(2000);
 }
 

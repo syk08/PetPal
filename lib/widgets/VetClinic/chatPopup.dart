@@ -29,9 +29,10 @@ void Chatpopup(BuildContext context) {
               children: List.generate(
                 4,
                 (index) => Card(
-                  shadowColor: Color.fromARGB(255, 138, 41, 17),
-                  //surfaceTintColor: Color.fromARGB(194, 177, 21, 27),
-                  color: Color.fromARGB(255, 248, 209, 209),
+                  elevation: 5,
+                  surfaceTintColor: Color.fromARGB(255, 254, 140, 1),
+                  shadowColor: Colors.black,
+                  
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -71,7 +72,7 @@ void Chatpopup(BuildContext context) {
                                   context.go(
                                     '/chat',
                                     extra: {
-                                      'path': index, 
+                                      'path': index,
                                       'name': titles[index],
                                     },
                                   );
@@ -159,16 +160,31 @@ void Chatpopup(BuildContext context) {
 Widget ChatCardPopup(BuildContext context, String title) {
   return Center(
     child: Card(
+      elevation: 15,
+      surfaceTintColor: Color.fromARGB(255, 254, 140, 1),
+      shadowColor: Colors.black,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(10),
       ),
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Container(
-        width: 200, // Adjust this value to make the card square
-        height: 50, // Same value as width to ensure square shape
+        width: 170, // Adjust this value to make the card square
+        height: 100, // Same value as width to ensure square shape
         child: Center(
           child: ListTile(
-            title: Text(title, textAlign: TextAlign.center),
+            leading: Container(
+              width: 35,
+              height: 35,
+              child: Image.asset(
+                'assets/images/chat_icon.png', // Replace with your local image path
+                fit: BoxFit.cover,
+              ),
+            ),
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              // Prevent text overflow
+            ),
             onTap: () async {
               Chatpopup(context);
             },

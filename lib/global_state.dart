@@ -17,7 +17,7 @@ class GlobalState {
       LatLng(23.82193602731398, 90.37337460621342),
       LatLng(23.758921680108497, 90.37216931901256)
     ]; 
-    currentLocation = LatLng(23.83839616689758, 90.36708542688567);
+    //currentLocation = LatLng(23.83839616689758, 90.36708542688567);
   }
 
   // Define your global variables here
@@ -26,45 +26,45 @@ class GlobalState {
   List<LatLng> nearbyLocation = [];
 
   // Method to set the current location dynamically
-  // Future<void> setCurrentLocation() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
+  Future<void> setCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  //   // Test if location services are enabled.
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     // Location services are not enabled, do not continue
-  //     return Future.error('Location services are disabled.');
-  //   }
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled, do not continue
+      return Future.error('Location services are disabled.');
+    }
 
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       // Permissions are denied, do not continue
-  //       return Future.error('Location permissions are denied.');
-  //     }
-  //   }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, do not continue
+        return Future.error('Location permissions are denied.');
+      }
+    }
 
-  //   if (permission == LocationPermission.deniedForever) {
-  //     // Permissions are denied forever, handle appropriately
-  //     return Future.error(
-  //         'Location permissions are permanently denied, we cannot request permissions.');
-  //   }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
 
-  //   // When we reach here, permissions are granted and we can continue accessing the position
-  //   Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //   currentLocation = LatLng(position.latitude, position.longitude);
-  // }
+    // When we reach here, permissions are granted and we can continue accessing the position
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentLocation = LatLng(position.latitude, position.longitude);
+  }
 
   // Method to calculate nearby locations within a given radius
   Future<void> getNearbyLocations(double radius) async {
     // Ensure current location is set
     // print(currentLocation);
-    // if (currentLocation == null) {
-    //   await setCurrentLocation();
-    // }
+    if (currentLocation == null) {
+      await setCurrentLocation();
+    }
     print(currentLocation);
     for (LatLng otherUser in latLng!) {
       double distance = Geolocator.distanceBetween(

@@ -23,9 +23,9 @@ class _VetsNearState extends State<VetsNear> {
   void initState() {
     super.initState();
     // Set the initial location
-    //_initialLocation = widget.currentLocation ?? widget.latLng!.first;
-    _initialLocation=LatLng(23.83839616689758, 90.36708542688567);
-    print(_initialLocation);
+    _initialLocation = widget.currentLocation ?? widget.latLng!.first;
+    // _initialLocation=LatLng(23.83839616689758, 90.36708542688567);
+    // print(_initialLocation);
   }
 
   @override

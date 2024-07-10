@@ -23,8 +23,8 @@ class _AllVetsState extends State<AllVets> {
   void initState() {
     super.initState();
     // Set the initial location
-    //_initialLocation = widget.currentLocation ?? widget.latLng!.first;
-    _initialLocation=LatLng(23.83839616689758, 90.36708542688567);
+    _initialLocation = widget.currentLocation ?? widget.latLng!.first;
+    //_initialLocation=LatLng(23.83839616689758, 90.36708542688567);
   }
 
   @override

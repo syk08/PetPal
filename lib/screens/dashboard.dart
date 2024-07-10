@@ -91,9 +91,13 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
+              
               Column(
+                
                 children: [
+                  SizedBox(height: 50),
                   Container(
+                    
                     margin: EdgeInsets.all(10),
                     height: MediaQuery.of(context).size.height / 6,
                     child: CarouselSlider(
@@ -102,6 +106,12 @@ class _DashboardState extends State<Dashboard> {
                         aspectRatio: 16 / 12,
                         viewportFraction: 0.4,
                         enlargeCenterPage: true,
+                        autoPlay: true, // Enable auto play
+                        autoPlayInterval:
+                            Duration(seconds: 3), // Time between auto plays
+                        autoPlayAnimationDuration:
+                            Duration(milliseconds: 800), // Animation duration
+                        autoPlayCurve: Curves.fastOutSlowIn,
                       ),
                       items: [
                         SliderWidget(
