@@ -106,7 +106,7 @@ class _AddPetPageState extends State<AddPetPage> {
   Future<List<Map<String, dynamic>>> _fetchNearbyLocations(
       Position currentPosition) async {
     QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('pets').get();
+        await FirebaseFirestore.instance.collection('pets').where('owner', isEqualTo: "").get();
 
     List<Map<String, dynamic>> nearbyLocations = [];
 
@@ -196,6 +196,7 @@ class _AddPetPageState extends State<AddPetPage> {
                     child: Text('Pick Image'),
                   ),
                   Gap(16),
+                  _locations.isEmpty == true ? Text("No nearby devices") :
                   DropdownButtonFormField<String>(
                     value: _location,
                     items: _locations.map((location) {

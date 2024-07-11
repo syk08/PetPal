@@ -181,11 +181,11 @@ Widget build(BuildContext context) {
               Container(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
-                      .collection('posts')
+                      .collection('posts').orderBy('timestamp')
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                     return Expanded(
                       child: ListView(
@@ -195,8 +195,8 @@ Widget build(BuildContext context) {
                               document.data()! as Map<String, dynamic>;
                           String postId = document.id;
                           return Card(
-                            color: Color.fromARGB(255, 88, 146, 173),
-                            margin: EdgeInsets.symmetric(vertical: 10),
+                            color: const Color.fromARGB(255, 88, 146, 173),
+                            margin: const EdgeInsets.symmetric(vertical: 10),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
@@ -209,7 +209,7 @@ Widget build(BuildContext context) {
                                       height: 300,
                                     ),
                                   Text(data['post'],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 20, color: Colors.white)),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -231,6 +231,7 @@ Widget build(BuildContext context) {
                                                   TextEditingController();
                                               return AlertDialog(
                                                 title: Text('Add a comment'),
+                                            
                                                 content: TextField(
                                                   controller: _commentController,
                                                   decoration: InputDecoration(
@@ -267,7 +268,7 @@ Widget build(BuildContext context) {
                                       }
                                       var comments = commentSnapshot.data!.docs;
                                       return ExpansionTile(
-                                        title: Text('View all comments'),
+                                        title: Text('View all comments (${comments.length})'),
                                         children: comments.map((commentDoc) {
                                           Map<String, dynamic> commentData =
                                               commentDoc.data()!
