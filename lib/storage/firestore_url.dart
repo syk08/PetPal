@@ -41,4 +41,21 @@ class FirestoreService {
       print(e);
     }
   }
+
+    Future<void> addPet(String petname, String? imageUrl, String? userName) async {
+
+    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('pets').doc(petname).get();
+    var currentData = docSnapshot.data() as Map<String, dynamic>;
+    try {
+          await FirebaseFirestore.instance.collection('pets').doc(petname).set({
+        'latitude': currentData['latitude'],
+        'longitude': currentData['longitude'],
+        'name': petname,
+        'owner': userName,
+        'imageUrl': imageUrl
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
+  }
 }

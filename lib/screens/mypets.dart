@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -61,10 +62,29 @@ class _MyPetsState extends State<MyPets> {
           SliverGrid.count(
             crossAxisCount: 2,
             children: <Widget>[
-              card(context, 'AddPets', 'svg', 'Add Pets'),
-              card(context, 'Simba', 'png', 'Simba'),
-              card(context, 'Bella', 'png', 'Bella'),
-              card(context, 'Johny', 'png', 'Johny')
+              card(context, 'AddPets', 'svg', 'Add Pets', "", 'addpets'),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('pets').snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  // Display pet cards
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      var pet = snapshot.data!.docs[index];
+                      return card(context, pet['imageUrl'], 'url', pet['name'], pet['name']);
+                    },
+                  );
+                },
+              ),
+              card(context, 'Simba', 'png', 'Simba', 'Simba'),
+              card(context, 'Bella', 'png', 'Bella', 'Bella'),
+              card(context, 'Johny', 'png', 'Johny', 'Johny')
             ],
           ),
         ],

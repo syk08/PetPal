@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_pal/screens/mymap.dart';
 
 import '../core/util.dart';
 
-import '../screens/mypets.dart';
-import '../screens/posts.dart';
-
-Widget card(context, String image, String imageType, String text,
+Widget card(
+    context, String image, String imageType, String text, String petname,
     [String? route_dir]) {
   print(imageType);
   return GestureDetector(
     onTap: () {
-      GoRouter.of(context).go('/$route_dir');
+      if (route_dir == 'addpets') {
+        GoRouter.of(context).go('/$route_dir');
+      } else {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => MyMap(petname)));
+      }
+      //MyMap(petname);
     },
     child: Container(
       margin: EdgeInsets.all(15),
@@ -33,9 +38,9 @@ Widget card(context, String image, String imageType, String text,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          imageType == 'svg'
-              ? SvgPicture.asset('assets/images/$image.svg')
-              : Image.asset('assets/images/$image.png'),
+          if (imageType == 'svg') SvgPicture.asset('assets/images/$image.svg'),
+          if (imageType == 'png') Image.asset('assets/images/$image.png'),
+          if (imageType == 'url') Image.network(image),
           SizedBox(height: 20),
           Text(
             text,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_pal/screens/addpets.dart';
 import 'package:pet_pal/screens/login_reg/reset_password.dart';
 import 'package:pet_pal/screens/login_reg/signin_screen.dart';
 import 'package:pet_pal/screens/login_reg/signup_screen.dart';
@@ -25,6 +26,7 @@ const String reset = '/reset';
 const String homeRoute = '/home';
 const String dashboardRoute = '/dashboard';
 const String myPetsRoute = '/mypets';
+const String addPetsRoute = '/addpets';
 const String postsRoute = '/posts';
 const String virtualVet = '/vet';
 const String vetsNearRoute = '/vets_near';
@@ -80,6 +82,12 @@ final GoRouter router = GoRouter(
       path: myPetsRoute,
       builder: (BuildContext context, GoRouterState state) {
         return MyPets();
+      },
+    ),
+    GoRoute(
+      path: addPetsRoute,
+      builder: (BuildContext context, GoRouterState state) {
+        return AddPetPage();
       },
     ),
     GoRoute(
