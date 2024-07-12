@@ -25,6 +25,7 @@ class _DashboardState extends State<Dashboard> {
   User? _user;
   String? _userName;
   List<Map<String, dynamic>>? _images;
+  List<Map<String, dynamic>>? _pets = [];
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _DashboardState extends State<Dashboard> {
       });
       await _getUserDetails(user.uid);
       await _getImages();
+      await _getPets();
     }
   }
 
@@ -55,14 +57,42 @@ class _DashboardState extends State<Dashboard> {
 
   Future<void> _getImages() async {
     QuerySnapshot postQuery =
-        await FirebaseFirestore.instance.collection('images').get();
+        await FirebaseFirestore.instance.collection('posts').get();
     List<Map<String, dynamic>> fetchedPosts = postQuery.docs.map((doc) {
       return {
         'imageURL': doc['imageUrl'],
+        'poster': doc['poster'],
       };
     }).toList();
     setState(() {
       _images = fetchedPosts;
+    });
+  }
+
+  Future<void> _getPets() async {
+    QuerySnapshot petQuery =
+        await FirebaseFirestore.instance.collection('pets').get();
+    // List<Map<String, dynamic>> fetchedPets = petQuery.docs.map((doc) {
+    //   return {
+    //     'imageURL': doc['imageUrl'],
+    //     'name': doc['name'],
+    //   };
+    // }).toList();
+
+    List<Map<String, dynamic>> fetchedPets = [];
+
+    petQuery.docs.forEach((doc) {
+      // Check if pet is already in fetchedPets
+      if (!fetchedPets.any((pet) => pet['name'] == doc['name'])) {
+        fetchedPets.add({
+          'imageURL': doc['imageUrl'],
+          'name': doc['name'],
+        });
+      }
+    });
+
+    setState(() {
+      _pets = fetchedPets;
     });
   }
 
@@ -87,7 +117,7 @@ class _DashboardState extends State<Dashboard> {
     return _userName == null
         ? CircularProgressIndicator()
         : Scaffold(
-            backgroundColor: Color.fromARGB(255, 147, 224, 219),
+            backgroundColor: Colors.transparent,
             appBar: Navbar(
               title: 'Hello, ${_userName}',
               currentIndex: _selectedIndex,
@@ -98,7 +128,7 @@ class _DashboardState extends State<Dashboard> {
               // Background Image
               Container(
                 width: double.infinity,
-                height: double.infinity,
+                height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/home2.jpg'),
@@ -106,105 +136,200 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-              
-              Column(
-                
-                children: [
-                  SizedBox(height: 50),
-                  Container(
-                    
-                    margin: EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height / 6,
-                    child: CarouselSlider(
-                      options: CarouselOptions(
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        padding: EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 6,
-                        aspectRatio: 16 / 12,
-                        viewportFraction: 0.4,
-                        enlargeCenterPage: true,
-                        autoPlay: true, // Enable auto play
-                        autoPlayInterval:
-                            Duration(seconds: 3), // Time between auto plays
-                        autoPlayAnimationDuration:
-                            Duration(milliseconds: 800), // Animation duration
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                      ),
-                      items: [
-                        SliderWidget(
-                            context: context,
-                            title: 'Profile',
-                            icon: Icons.person,
-                            route: '/profile'),
-                        SliderWidget(
-                            context: context,
-                            title: 'My Pets',
-                            icon: Icons.pets,
-                            route: '/mypets'),
-                        SliderWidget(
-                            context: context,
-                            title: 'Community',
-                            icon: Icons.group,
-                            route: '/posts'),
-                        SliderWidget(
-                            context: context,
-                            title: 'Pet Mart',
-                            icon: Icons.store_rounded,
-                            route: '/store'),
-                        SliderWidget(
-                            context: context,
-                            title: 'Adopt',
-                            icon: Icons.favorite,
-                            route: '/posts'),
-                        SliderWidget(
-                            context: context,
-                            title: 'Lost & Found',
-                            icon: Icons.search,
-                            route: '/posts'),
-                        SliderWidget(
-                            context: context,
-                            title: 'Virtual Vet',
-                            icon: Icons.local_hospital,
-                            route: '/vet'),
-                      ],
-                    ),
-                  ),
-                  // Other content of the dashboard goes here...
-                  Container(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('images')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        var images = snapshot.data!.docs;
-
-                        return Expanded(
-                          child: ListView(
-                            children: snapshot.data!.docs
-                                .map((DocumentSnapshot document) {
-                              Map<String, dynamic> data =
-                                  document.data()! as Map<String, dynamic>;
-                              return ListTile(
-                                title: Text(
-                                  data['imageUrl'].toString(),
-                                  //style: Theme.of(context).textTheme.headline1,
-                                ),
-                                subtitle: Image(
-                                  image: NetworkImage(data[
-                                      'imageUrl']), // ----------- the line that should change
-                                  width: 300,
-                                  height: 300,
-                                ),
-                              );
-                            }).toList(),
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: MediaQuery.of(context).size.height / 6,
+                            aspectRatio: 16 / 12,
+                            viewportFraction: 0.4,
+                            enlargeCenterPage: true,
+                            autoPlay: true, // Enable auto play
+                            autoPlayInterval:
+                                Duration(seconds: 3), // Time between auto plays
+                            autoPlayAnimationDuration: Duration(
+                                milliseconds: 800), // Animation duration
+                            autoPlayCurve: Curves.fastOutSlowIn,
                           ),
-                        );
-                      },
-                    ),
+                          items: [
+                            SliderWidget(
+                                context: context,
+                                title: 'Profile',
+                                icon: Icons.person,
+                                route: '/profile'),
+                            SliderWidget(
+                                context: context,
+                                title: 'My Pets',
+                                icon: Icons.pets,
+                                route: '/mypets'),
+                            SliderWidget(
+                                context: context,
+                                title: 'Community',
+                                icon: Icons.group,
+                                route: '/posts'),
+                            SliderWidget(
+                                context: context,
+                                title: 'Pet Mart',
+                                icon: Icons.store_rounded,
+                                route: '/store'),
+                            SliderWidget(
+                                context: context,
+                                title: 'Virtual Vet',
+                                icon: Icons.local_hospital,
+                                route: '/vet'),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        alignment: Alignment.center,
+                        color: Color.fromARGB(255, 157, 208, 232),
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          "Posts",
+                          style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontFamily: 'Pacifico'),
+                        ),
+                      ),
+                      // posts
+                      _images == null || _images!.isEmpty
+                          ? Container(
+                              color:
+                                  Colors.transparent, // Transparent background
+                              margin: EdgeInsets.all(2),
+                              padding: EdgeInsets.all(5),
+                              height: MediaQuery.of(context).size.height / 6,
+                              child: Center(
+                                child: Text('No posts available'),
+                              ),
+                            )
+                          : Container(
+                              color:
+                                  Colors.transparent, // Transparent background
+                              margin: EdgeInsets.all(2),
+                              padding: EdgeInsets.all(5),
+                              height: MediaQuery.of(context).size.height / 5,
+                              child: CarouselSlider(
+                                options: CarouselOptions(
+                                  height:
+                                      MediaQuery.of(context).size.height / 6,
+                                  aspectRatio: 16 / 12,
+                                  viewportFraction: 0.4,
+                                  enlargeCenterPage: true,
+                                  autoPlay: true, // Enable auto play
+                                  autoPlayInterval: Duration(
+                                      seconds: 3), // Time between auto plays
+                                  autoPlayAnimationDuration: Duration(
+                                      milliseconds: 800), // Animation duration
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                ),
+                                items: _images!.map((post) {
+                                  return Builder(
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                2,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5.0),
+                                        child: postcard(
+                                          context,
+                                          post['imageURL'],
+                                          'url',
+                                          post['poster'] ?? 'No Poster',
+                                          post['poster'] ?? 'No Poster',
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                      SizedBox(height: 15),
+                      Container(
+                        alignment: Alignment.center,
+                        color: Color.fromARGB(255, 157, 208, 232),
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          "My Pets",
+                          style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontFamily: 'Pacifico'),
+                        ),
+                      ),
+                      // pets
+                      _pets == null || _pets!.isEmpty
+                          ? Container(
+                              color:
+                                  Colors.transparent, // Transparent background
+                              margin: EdgeInsets.all(2),
+                              padding: EdgeInsets.all(5),
+                              height: MediaQuery.of(context).size.height / 6,
+                              child: Center(
+                                child: Text('No pets'),
+                              ),
+                            )
+                          : Container(
+                              color:
+                                  Colors.transparent, // Transparent background
+                              margin: EdgeInsets.all(2),
+                              padding: EdgeInsets.all(5),
+                              height: MediaQuery.of(context).size.height / 5,
+                              child: CarouselSlider(
+                                options: CarouselOptions(
+                                  height:
+                                      MediaQuery.of(context).size.height / 6,
+                                  aspectRatio: 16 / 12,
+                                  viewportFraction: 0.4,
+                                  enlargeCenterPage: true,
+                                  //autoPlay: true, // Enable auto play
+                                  // autoPlayInterval: Duration(
+                                  //     seconds: 3), // Time between auto plays
+                                  // autoPlayAnimationDuration: Duration(
+                                  //     milliseconds: 800), // Animation duration
+                                  // autoPlayCurve: Curves.fastOutSlowIn,
+                                ),
+                                items: _pets!.map((pet) {
+                                  return Builder(
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                2,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5.0),
+                                        child: postcard(
+                                          context,
+                                          pet['imageURL'],
+                                          'url',
+                                          pet['name'] ?? 'No Name',
+                                          pet['name'] ?? 'No Name',
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ]),
             bottomNavigationBar: BottomNavbar(

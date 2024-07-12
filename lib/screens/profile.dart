@@ -1,14 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; // Ensure you have imported go_router package
+import 'package:go_router/go_router.dart';
 import 'package:pet_pal/widgets/navbar.dart';
-import 'package:provider/provider.dart'; // If using Provider for state management
-
-// Replace with actual implementation or provider imports for user data
-String mockUsername = 'John Doe';
-String mockEmail = 'john.doe@example.com';
-String mockPhoneNumber = '+1234567890';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override

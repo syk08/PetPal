@@ -28,6 +28,8 @@ class _MyPetsState extends State<MyPets> {
       GoRouter.of(context).go('/mypets');
     } else if (index == 2) {
       GoRouter.of(context).go('/posts');
+    } else if (index == 3) {
+      GoRouter.of(context).go('/store');
     }
   }
 
@@ -39,33 +41,35 @@ class _MyPetsState extends State<MyPets> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromARGB(255, 207, 232, 255),
       body: CustomScrollView(
         shrinkWrap: true,
         slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: Container(
-              height: 136,
-              margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'My Pet\'s',
-                    style: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // SliverToBoxAdapter(
+          //   child: Container(
+          //     height: 136,
+          //     margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.start,
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: <Widget>[
+          //         Text(
+          //           'My Pet\'s',
+          //           style: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           SliverGrid.count(
             crossAxisCount: 2,
             children: <Widget>[
               card(context, 'AddPets', 'svg', 'Add Pets', "", 'addpets'),
               StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('pets').snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                stream:
+                    FirebaseFirestore.instance.collection('pets').snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
@@ -77,7 +81,8 @@ class _MyPetsState extends State<MyPets> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       var pet = snapshot.data!.docs[index];
-                      return card(context, pet['imageUrl'], 'url', pet['name'], pet['name']);
+                      return card(context, pet['imageUrl'], 'url', pet['name'],
+                          pet['name']);
                     },
                   );
                 },
