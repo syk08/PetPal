@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_pal/core/loadingscreen.dart';
 import '../../global_state.dart';
 import '../../widgets/VetClinic/chatPopup.dart';
 import '../../widgets/VetClinic/subscribePopup.dart';
@@ -11,6 +14,37 @@ class VetClinic extends StatefulWidget {
 }
 
 class _VetClinicState extends State<VetClinic> {
+  User? _user;
+  String? _userName;
+
+    @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+
+  Future<void> _getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _user = user;
+      });
+      await _getUserDetails(user.uid);
+      //await _fetchPosts();
+    }
+  }
+
+  Future<void> _getUserDetails(String uid) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('UserData').doc(uid).get();
+    if (userDoc.exists) {
+      setState(() {
+        _userName = userDoc['username'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,16 +81,13 @@ class _VetClinicState extends State<VetClinic> {
           ),
         ),
         Padding(
-          
-                    padding: const EdgeInsets.only(
+          padding: const EdgeInsets.only(
               top: 0, left: 16.0, right: 16.0, bottom: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            
             children: [
-               SizedBox(height: 300),
+              SizedBox(height: 300),
               Row(
-                
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildCard(context, 'Our Vet Location', '/allvet', 'map_loc'),
@@ -69,7 +100,7 @@ class _VetClinicState extends State<VetClinic> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildCardPopup(context, 'Subscribe'),
-                  ChatCardPopup(context, 'Text Our Vet'),
+                  _userName != null? ChatCardPopup(context, 'Text Our Vet', _userName!) : getLoader(),
                 ],
               ),
               SizedBox(height: 100), // Add spacing after the rows
@@ -113,7 +144,7 @@ class _VetClinicState extends State<VetClinic> {
               onTap: () async {
                 GoRouter.of(context).go(route);
               },
-             // Adjust padding if necessary
+              // Adjust padding if necessary
             ),
           ),
         ),

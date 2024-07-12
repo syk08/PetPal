@@ -239,7 +239,7 @@ class _StorePageState extends State<StorePage> {
               children: [
                 Text(
                   product['name'],
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
                   icon: Icon(
@@ -253,7 +253,7 @@ class _StorePageState extends State<StorePage> {
             ),
             Text(
               '\$${product['price']}',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 11),
             ),
           ],
         ),

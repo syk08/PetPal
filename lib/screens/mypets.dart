@@ -87,9 +87,9 @@ class _MyPetsState extends State<MyPets> {
                   );
                 },
               ),
-              card(context, 'Simba', 'png', 'Simba', 'Simba'),
-              card(context, 'Bella', 'png', 'Bella', 'Bella'),
-              card(context, 'Johny', 'png', 'Johny', 'Johny')
+              // card(context, 'Simba', 'png', 'Simba', 'Simba'),
+              // card(context, 'Bella', 'png', 'Bella', 'Bella'),
+              // card(context, 'Johny', 'png', 'Johny', 'Johny')
             ],
           ),
         ],

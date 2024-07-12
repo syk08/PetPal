@@ -13,10 +13,7 @@ Widget card(
     onTap: () {
       if (route_dir == 'addpets') {
         GoRouter.of(context).go('/$route_dir');
-      } else {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => MyMap(petname)));
-      }
+      } 
       //MyMap(petname);
     },
     child: Container(

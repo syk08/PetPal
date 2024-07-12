@@ -1,16 +1,21 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_pal/core/loadingscreen.dart';
 import 'package:pet_pal/widgets/navbar.dart';
 import '../core/util.dart';
 import '../widgets/card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../widgets/slider_widget.dart';
 import '../widgets/profile_drawer.dart';
+import 'mymap.dart';
 
 class Dashboard extends StatefulWidget {
   static const routeName = '/dashboard';
@@ -115,7 +120,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return _userName == null
-        ? CircularProgressIndicator()
+        ? getLoader()
         : Scaffold(
             backgroundColor: Colors.transparent,
             appBar: Navbar(
@@ -211,7 +216,9 @@ class _DashboardState extends State<Dashboard> {
                               padding: EdgeInsets.all(5),
                               height: MediaQuery.of(context).size.height / 6,
                               child: Center(
-                                child: Text('No posts available'),
+                                child: LoadingAnimationWidget
+                                    .horizontalRotatingDots(
+                                        color: Colors.white, size: 40),
                               ),
                             )
                           : Container(
@@ -272,61 +279,96 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                       // pets
-                      _pets == null || _pets!.isEmpty
-                          ? Container(
-                              color:
-                                  Colors.transparent, // Transparent background
-                              margin: EdgeInsets.all(2),
-                              padding: EdgeInsets.all(5),
-                              height: MediaQuery.of(context).size.height / 6,
-                              child: Center(
-                                child: Text('No pets'),
-                              ),
-                            )
-                          : Container(
-                              color:
-                                  Colors.transparent, // Transparent background
-                              margin: EdgeInsets.all(2),
-                              padding: EdgeInsets.all(5),
-                              height: MediaQuery.of(context).size.height / 5,
-                              child: CarouselSlider(
-                                options: CarouselOptions(
-                                  height:
-                                      MediaQuery.of(context).size.height / 6,
-                                  aspectRatio: 16 / 12,
-                                  viewportFraction: 0.4,
-                                  enlargeCenterPage: true,
-                                  //autoPlay: true, // Enable auto play
-                                  // autoPlayInterval: Duration(
-                                  //     seconds: 3), // Time between auto plays
-                                  // autoPlayAnimationDuration: Duration(
-                                  //     milliseconds: 800), // Animation duration
-                                  // autoPlayCurve: Curves.fastOutSlowIn,
+                      Container(
+                        color: Colors.transparent, // Transparent background
+                        margin: EdgeInsets.all(2),
+                        padding: EdgeInsets.all(5),
+                        height: MediaQuery.of(context).size.height / 5,
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('pets')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Container(
+                                color: Colors
+                                    .transparent, // Transparent background
+                                margin: EdgeInsets.all(2),
+                                padding: EdgeInsets.all(5),
+                                height: MediaQuery.of(context).size.height / 6,
+                                child: Center(
+                                  child: LoadingAnimationWidget
+                                      .horizontalRotatingDots(
+                                          color: Colors.white, size: 40),
                                 ),
-                                items: _pets!.map((pet) {
-                                  return Builder(
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                2,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 5.0),
-                                        child: postcard(
-                                          context,
-                                          pet['imageURL'],
-                                          'url',
-                                          pet['name'] ?? 'No Name',
-                                          pet['name'] ?? 'No Name',
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }).toList(),
-                              ),
-                            ),
+                              );
+                            }
+                            if (!snapshot.hasData ||
+                                snapshot.data!.docs.isEmpty) {
+                              return Center(child: Text('No pets found.'));
+                            }
+
+                            var pets = snapshot.data!.docs;
+
+                            return ListView.builder(
+                              itemCount: pets.length,
+                              itemBuilder: (context, index) {
+                                var pet =
+                                    pets[index].data() as Map<String, dynamic>;
+                                return Card(
+                                  margin: EdgeInsets.all(10.0),
+                                  elevation: 4.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Container(
+                                    margin: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(
+                                          0.1), // Set transparency here
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      // boxShadow: [
+                                      //   BoxShadow(
+                                      //     color: Colors.black12,
+                                      //     blurRadius: 4.0,
+                                      //     spreadRadius: 2.0,
+                                      //   ),
+                                      // ],
+                                    ),
+                                    child: ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundImage: pet['imageUrl'] != null
+                                            ? NetworkImage(pet['imageUrl'])
+                                            : AssetImage(
+                                                    'assets/placeholder.png')
+                                                as ImageProvider,
+                                      ),
+                                      title: Text(
+                                        pet['name'] ?? 'No Name',
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      trailing: IconButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MyMap(pet['name'])));
+                                          },
+                                          
+                                          icon: const Icon(Icons.pets),
+                                          color: const Color.fromARGB(
+                                              255, 157, 208, 232)),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

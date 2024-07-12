@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../screens/chatScreen.dart';
 import '../../screens/vetClinic/chat/WhatsappChat.dart';
 
-void Chatpopup(BuildContext context) {
-  List<String> titles = [
-    'Mirpur Pet Animal Clinic',
-    'Pet Care & Vet Point',
-    'Royal Pet Care',
-    'Vet and Pet Care (VNPC)'
+void Chatpopup(BuildContext context, String username) {
+    final List<Map<String, String>> titles = [
+    {'name': 'Mirpur Pet Animal Clinic', 'image': 'assets/images/vet0.jpg', 'page': 'MPAC'},
+    {'name': 'Pet Care & Vet Point', 'image': 'assets/images/vet1.jpg', 'page': 'PCVC'},
+    {'name': 'Royal Pet Care', 'image': 'assets/images/vet2.jpg', 'page': 'RPC'},
+    {'name': 'Vet and Pet Care (VNPC)', 'image': 'assets/images/vet3.jpg', 'page': 'VNPC'},
   ];
   List<String> desc = [
     'Your trusted destination for all pet care essentials.',
@@ -15,6 +16,15 @@ void Chatpopup(BuildContext context) {
     'Where your pets health and happiness come first.',
     'Comprehensive care solutions for every pet need.'
   ];
+
+  String getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -43,7 +53,7 @@ void Chatpopup(BuildContext context) {
                           children: [
                             ClipOval(
                               child: Image.asset(
-                                'assets/images/vet$index.jpg', // Replace with your local image path
+                                titles[index]['image']!, // Replace with your local image path
                                 width: 35,
                                 height: 35,
                                 fit: BoxFit.cover,
@@ -52,7 +62,7 @@ void Chatpopup(BuildContext context) {
                             SizedBox(
                                 width:
                                     10), // Add some space between the image and the text
-                            Text(titles[index]),
+                            Text(titles[index]['name']!),
                           ],
                         ),
                         SizedBox(height: 10), // Space between rows
@@ -69,13 +79,15 @@ void Chatpopup(BuildContext context) {
                               child: ElevatedButton(
                                 onPressed: () {
                                   // Add your subscribe action here
-                                  context.go(
-                                    '/chat',
-                                    extra: {
-                                      'path': index,
-                                      'name': titles[index],
-                                    },
-                                  );
+                                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatRoom(
+                                          chatRoomId: getChatRoomId(
+                                              username, titles[index]['page']!),
+                                          vetname: titles[index]['page']!,
+                                          username: username,
+                                          index: index)));
                                 },
                                 style: ButtonStyle(
                                   backgroundColor:
@@ -157,7 +169,7 @@ void Chatpopup(BuildContext context) {
   );
 }
 
-Widget ChatCardPopup(BuildContext context, String title) {
+Widget ChatCardPopup(BuildContext context, String title, String username) {
   return Center(
     child: Card(
       elevation: 15,
@@ -186,7 +198,7 @@ Widget ChatCardPopup(BuildContext context, String title) {
               // Prevent text overflow
             ),
             onTap: () async {
-              Chatpopup(context);
+              Chatpopup(context, username);
             },
           ),
         ),
