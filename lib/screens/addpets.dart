@@ -151,6 +151,28 @@ class _AddPetPageState extends State<AddPetPage> {
       // Show an error message or handle the case when any field is empty
       return;
     }
+    if (_location != _nameController.text) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Alert'),
+            content: Text(
+                "Pet name didn't match with the one displayed in Location/Devices."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     String temp = "sth";
     setState(() {
       temp = _nameController.text;
@@ -218,6 +240,14 @@ class _AddPetPageState extends State<AddPetPage> {
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(labelText: 'Pet Name'),
+                  ),
+                  Gap(8),
+                  Text(
+                    "***Must match the name available in Location/Devices.",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                    ),
                   ),
                   Gap(16),
                   // _image != null ?
