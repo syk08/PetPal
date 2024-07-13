@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final CollectionReference _postsCollection = FirebaseFirestore.instance.collection('posts');
-
+  final CollectionReference _postsCollection =
+      FirebaseFirestore.instance.collection('posts');
 
   Future<void> saveImageUrl(String imageUrl, String documentId) async {
     try {
@@ -15,7 +15,8 @@ class FirestoreService {
     }
   }
 
-    Future<void> addPost(String? text, String? imageUrl, DateTime timestamp, int likes,String? user) async {
+  Future<void> addPost(String? text, String? imageUrl, DateTime timestamp,
+      int likes, String? user) async {
     try {
       await _postsCollection.add({
         'post': text,
@@ -30,9 +31,14 @@ class FirestoreService {
     }
   }
 
-  Future<void> addComment(String postId, String comment, String userName, DateTime timestamp) async {
+  Future<void> addComment(String postId, String comment, String userName,
+      DateTime timestamp) async {
     try {
-      await _firestore.collection('posts').doc(postId).collection('comments').add({
+      await _firestore
+          .collection('posts')
+          .doc(postId)
+          .collection('comments')
+          .add({
         'comment': comment,
         'username': userName,
         'timestamp': timestamp,
@@ -42,18 +48,16 @@ class FirestoreService {
     }
   }
 
-    Future<void> addPet(String petname, String? imageUrl, String? userName) async {
-
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('pets').doc(petname).get();
-    var currentData = docSnapshot.data() as Map<String, dynamic>;
+  Future<void> addPet(
+      String petname, String? imageUrl, String? userName) async {
+    DocumentSnapshot docSnapshot =
+        await FirebaseFirestore.instance.collection('pets').doc(petname).get();
+    //var currentData = docSnapshot.data() as Map<String, dynamic>;
     try {
-          await FirebaseFirestore.instance.collection('pets').doc(petname).set({
-        'latitude': currentData['latitude'],
-        'longitude': currentData['longitude'],
-        'name': petname,
-        'owner': userName,
-        'imageUrl': imageUrl
-      }, SetOptions(merge: true));
+      print("ashena?");
+      await FirebaseFirestore.instance.collection('pets').doc(petname).set(
+          {'name': petname, 'owner': userName, 'imageUrl': imageUrl},
+          SetOptions(merge: true));
     } catch (e) {
       print(e);
     }

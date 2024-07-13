@@ -64,6 +64,10 @@ class _MyPetsState extends State<MyPets> {
     }
   }
 
+  void onPressed() {
+    GoRouter.of(context).go('/addpets');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,55 +90,87 @@ class _MyPetsState extends State<MyPets> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No pets found.'));
+            return Center(child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: onPressed,
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(
+                              0.1), // Mildly transparent background
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.add,
+                            size: 40,
+                            color: Colors.black.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Add pet',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
+                ));
           }
 
           var pets = snapshot.data!.docs;
-
           return CustomScrollView(
-            shrinkWrap: true,
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 136,
-                  margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'My Pet\'s',
-                        style: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
+                  shrinkWrap: true,
+                  slivers: <Widget>[
+                    SliverToBoxAdapter(
+                      child: Container(
+                        height: 136,
+                        margin:
+                            EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'My Pet\'s',
+                              style: TextStyle(
+                                  fontSize: 45, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.0,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    if (index == 0) {
-                      return card(context, 'AddPets', 'svg', 'Add Pets', "", 'addpets');
-                    }
-                    var pet = pets[index - 1];
-                    return card(
-                      context,
-                      pet['imageUrl'],
-                      'url',
-                      pet['name'],
-                      pet['name']
-                       // Route is not specified, add if needed
-                    );
-                  },
-                  childCount: pets.length + 1, // One extra for the AddPets card
-                ),
-              ),
-            ],
-          );
+                    ),
+                    SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.0,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          if (index == 0) {
+                            return card(context, 'AddPets', 'svg', 'Add Pets',
+                                "", 'addpets');
+                          }
+                          var pet = pets[index - 1];
+                          return card(context, pet['imageUrl'], 'url',
+                              pet['name'], pet['name']
+                              // Route is not specified, add if needed
+                              );
+                        },
+                        childCount:
+                            pets.length + 1, // One extra for the AddPets card
+                      ),
+                    ),
+                  ],
+                );
+
         },
       ),
       bottomNavigationBar: BottomNavbar(
