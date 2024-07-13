@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:pet_pal/core/router.dart';
 
 import '../storage/firebase_storage.dart';
 import '../storage/firestore_url.dart';
@@ -22,7 +23,7 @@ class _AddPetPageState extends State<AddPetPage> {
   String? _userName;
   final TextEditingController _nameController = TextEditingController();
   File _image = File('assets/images/14558.png');
-  
+
   String? _location;
   List<Map<String, dynamic>> _locations = [];
   bool _loading = false;
@@ -105,8 +106,10 @@ class _AddPetPageState extends State<AddPetPage> {
 
   Future<List<Map<String, dynamic>>> _fetchNearbyLocations(
       Position currentPosition) async {
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('pets').where('owner', isEqualTo: "").get();
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('pets')
+        .where('owner', isEqualTo: "")
+        .get();
 
     List<Map<String, dynamic>> nearbyLocations = [];
 
@@ -152,7 +155,7 @@ class _AddPetPageState extends State<AddPetPage> {
       temp = _nameController.text;
       //_imageFile = _image;
       _nameController.clear();
-     // _image = File(AutofillHints.addressCity);
+      // _image = File(AutofillHints.addressCity);
     });
     final fileName = DateTime.now().millisecondsSinceEpoch.toString();
     final downloadUrl = await _storageService.uploadImage(_image, fileName);
@@ -169,13 +172,42 @@ class _AddPetPageState extends State<AddPetPage> {
     //final timestamp = DateTime.now();
     await _firestoreService.addPet(temp, _imageUrl, _userName);
 
-    Navigator.pop(context);
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Pet')),
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(65),
+          child: AppBar(
+            backgroundColor: const Color.fromARGB(255, 157, 208, 232),
+            elevation: 0,
+            leading: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Icon(
+                  Icons.arrow_back,
+                  size: 25,
+                ),
+              ),
+            ),
+            leadingWidth: 20,
+            title: Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(
+                'Add Your Pet',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: _loading
@@ -196,23 +228,25 @@ class _AddPetPageState extends State<AddPetPage> {
                     child: Text('Pick Image'),
                   ),
                   Gap(16),
-                  _locations.isEmpty == true ? Text("No nearby devices") :
-                  DropdownButtonFormField<String>(
-                    value: _location,
-                    items: _locations.map((location) {
-                      return DropdownMenuItem<String>(
-                        value: location['name'],
-                        child: Text(
-                            '${location['name']} (${location['distance'].toStringAsFixed(1)} meters)'),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _location = value;
-                      });
-                    },
-                    decoration: InputDecoration(labelText: 'Location/Device'),
-                  ),
+                  _locations.isEmpty == true
+                      ? Text("No nearby devices")
+                      : DropdownButtonFormField<String>(
+                          value: _location,
+                          items: _locations.map((location) {
+                            return DropdownMenuItem<String>(
+                              value: location['name'],
+                              child: Text(
+                                  '${location['name']} (${location['distance'].toStringAsFixed(1)} meters)'),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _location = value;
+                            });
+                          },
+                          decoration:
+                              InputDecoration(labelText: 'Location/Device'),
+                        ),
                   Gap(16),
                   ElevatedButton(
                     onPressed: _addPet,

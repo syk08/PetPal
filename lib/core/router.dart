@@ -44,7 +44,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 // Define the GoRouter
 final GoRouter router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: signin,
+  initialLocation: homeRoute,
   debugLogDiagnostics: true,
   routes: <RouteBase>[
     GoRoute(

@@ -203,6 +203,9 @@ Widget build(BuildContext context) {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   if (data['imageUrl'] != null)
+                                  Text(data['poster'],
+                                      style: const TextStyle(
+                                          fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Pacifico')),
                                     Image(
                                       image: NetworkImage(data['imageUrl']),
                                       width: 300,

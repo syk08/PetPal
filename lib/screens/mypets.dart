@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,35 @@ class MyPets extends StatefulWidget {
 
 class _MyPetsState extends State<MyPets> {
   int _selectedIndex = 1;
+  User? _user;
+  String? _userName;
+
+    @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+    Future<void> _getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _user = user;
+      });
+      await _getUserDetails(user.uid);
+      //await _getPets();
+    }
+  }
+
+  Future<void> _getUserDetails(String uid) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('UserData').doc(uid).get();
+    if (userDoc.exists) {
+      setState(() {
+        _userName = userDoc['username'];
+      });
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -67,7 +97,7 @@ class _MyPetsState extends State<MyPets> {
               card(context, 'AddPets', 'svg', 'Add Pets', "", 'addpets'),
               StreamBuilder(
                 stream:
-                    FirebaseFirestore.instance.collection('pets').snapshots(),
+                    FirebaseFirestore.instance.collection('pets').where('owner', isEqualTo: _userName).snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {

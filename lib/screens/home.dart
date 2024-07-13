@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).go('/dashboard');
+        GoRouter.of(context).go('/signin');
       },
       child: Scaffold(
         backgroundColor: Color.fromARGB(255, 218, 175, 243),
@@ -35,6 +35,12 @@ class _HomeState extends State<Home> {
                 'PetPal',
                 style: TextStyle(
                     fontFamily: 'Pacifico', color: Colors.white, fontSize: 32),
+              ),
+              SizedBox(height: 15),
+              Text(
+                'Press anywhere to continue',
+                style: TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
               )
             ],
           ),

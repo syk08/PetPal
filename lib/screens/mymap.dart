@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
+import 'package:permission_handler/permission_handler.dart';
 
 class MyMap extends StatefulWidget {
   final String user_id;
@@ -14,6 +15,24 @@ class _MyMapState extends State<MyMap> {
   final loc.Location location = loc.Location();
   late GoogleMapController _controller;
   bool _added = false;
+  
+  @override
+  void initState() {
+    super.initState();
+    _requestPermission();
+  }
+
+  _requestPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('done');
+    } else if (status.isDenied) {
+      _requestPermission();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +59,7 @@ class _MyMapState extends State<MyMap> {
               child: Text(
                 widget.user_id,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 20,
                   color: Colors.white,
                 ),
               ),

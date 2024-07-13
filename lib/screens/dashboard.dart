@@ -30,7 +30,7 @@ class _DashboardState extends State<Dashboard> {
   User? _user;
   String? _userName;
   List<Map<String, dynamic>>? _images;
-  List<Map<String, dynamic>>? _pets = [];
+  //List<Map<String, dynamic>>? _pets = [];
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _DashboardState extends State<Dashboard> {
       });
       await _getUserDetails(user.uid);
       await _getImages();
-      await _getPets();
+      //await _getPets();
     }
   }
 
@@ -74,32 +74,32 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  Future<void> _getPets() async {
-    QuerySnapshot petQuery =
-        await FirebaseFirestore.instance.collection('pets').get();
-    // List<Map<String, dynamic>> fetchedPets = petQuery.docs.map((doc) {
-    //   return {
-    //     'imageURL': doc['imageUrl'],
-    //     'name': doc['name'],
-    //   };
-    // }).toList();
+  // Future<void> _getPets() async {
+  //   QuerySnapshot petQuery =
+  //       await FirebaseFirestore.instance.collection('pets').get();
+  //   // List<Map<String, dynamic>> fetchedPets = petQuery.docs.map((doc) {
+  //   //   return {
+  //   //     'imageURL': doc['imageUrl'],
+  //   //     'name': doc['name'],
+  //   //   };
+  //   // }).toList();
 
-    List<Map<String, dynamic>> fetchedPets = [];
+  //   List<Map<String, dynamic>> fetchedPets = [];
 
-    petQuery.docs.forEach((doc) {
-      // Check if pet is already in fetchedPets
-      if (!fetchedPets.any((pet) => pet['name'] == doc['name'])) {
-        fetchedPets.add({
-          'imageURL': doc['imageUrl'],
-          'name': doc['name'],
-        });
-      }
-    });
+  //   petQuery.docs.forEach((doc) {
+  //     // Check if pet is already in fetchedPets
+  //     if (!fetchedPets.any((pet) => pet['name'] == doc['name'] && pet['owner']==doc['owner'])) {
+  //       fetchedPets.add({
+  //         'imageURL': doc['imageUrl'],
+  //         'name': doc['name'],
+  //       });
+  //     }
+  //   });
 
-    setState(() {
-      _pets = fetchedPets;
-    });
-  }
+  //   setState(() {
+  //     _pets = fetchedPets;
+  //   });
+  // }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -287,6 +287,7 @@ class _DashboardState extends State<Dashboard> {
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('pets')
+                              .where('owner', isEqualTo: _userName)
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==

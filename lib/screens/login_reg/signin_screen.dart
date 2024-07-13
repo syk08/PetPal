@@ -102,7 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   _errorText = "Invalid email or password";
                                 });
                               } else {
-                                GoRouter.of(context).go('/home');
+                                GoRouter.of(context).go('/dashboard');
                               }
                             } on FirebaseAuthException catch (e) {
                               setState(() {
