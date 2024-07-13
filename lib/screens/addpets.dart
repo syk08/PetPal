@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_pal/core/router.dart';
@@ -172,42 +173,42 @@ class _AddPetPageState extends State<AddPetPage> {
     //final timestamp = DateTime.now();
     await _firestoreService.addPet(temp, _imageUrl, _userName);
 
-    Navigator.of(context).pop();
+    GoRouter.of(context).go('/mypets');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(65),
-          child: AppBar(
-            backgroundColor: const Color.fromARGB(255, 157, 208, 232),
-            elevation: 0,
-            leading: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(
-                  Icons.arrow_back,
-                  size: 25,
-                ),
+        preferredSize: const Size.fromHeight(65),
+        child: AppBar(
+          backgroundColor: const Color.fromARGB(255, 157, 208, 232),
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: InkWell(
+              onTap: () {
+                GoRouter.of(context).go('/mypets');
+              },
+              child: const Icon(
+                Icons.arrow_back,
+                size: 25,
               ),
             ),
-            leadingWidth: 20,
-            title: Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Text(
-                'Add Your Pet',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+          ),
+          leadingWidth: 20,
+          title: Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: Text(
+              'Add Your Pet',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
               ),
             ),
           ),
         ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: _loading

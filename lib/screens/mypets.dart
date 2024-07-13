@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_pal/core/loadingscreen.dart';
 import 'package:pet_pal/widgets/navbar.dart';
 
 import '../widgets/card.dart';
@@ -20,13 +21,13 @@ class _MyPetsState extends State<MyPets> {
   User? _user;
   String? _userName;
 
-    @override
+  @override
   void initState() {
     super.initState();
     _getCurrentUser();
   }
 
-    Future<void> _getCurrentUser() async {
+  Future<void> _getCurrentUser() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       setState(() {
@@ -72,57 +73,69 @@ class _MyPetsState extends State<MyPets> {
         onTap: _onItemTapped,
       ),
       backgroundColor: Color.fromARGB(255, 207, 232, 255),
-      body: CustomScrollView(
-        shrinkWrap: true,
-        slivers: <Widget>[
-          // SliverToBoxAdapter(
-          //   child: Container(
-          //     height: 136,
-          //     margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.start,
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: <Widget>[
-          //         Text(
-          //           'My Pet\'s',
-          //           style: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          SliverGrid.count(
-            crossAxisCount: 2,
-            children: <Widget>[
-              card(context, 'AddPets', 'svg', 'Add Pets', "", 'addpets'),
-              StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('pets').where('owner', isEqualTo: _userName).snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  // Display pet cards
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      var pet = snapshot.data!.docs[index];
-                      return card(context, pet['imageUrl'], 'url', pet['name'],
-                          pet['name']);
-                    },
-                  );
-                },
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('pets')
+            .where('owner', isEqualTo: _userName)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No pets found.'));
+          }
+
+          var pets = snapshot.data!.docs;
+
+          return CustomScrollView(
+            shrinkWrap: true,
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 136,
+                  margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'My Pet\'s',
+                        style: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              // card(context, 'Simba', 'png', 'Simba', 'Simba'),
-              // card(context, 'Bella', 'png', 'Bella', 'Bella'),
-              // card(context, 'Johny', 'png', 'Johny', 'Johny')
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.0,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    if (index == 0) {
+                      return card(context, 'AddPets', 'svg', 'Add Pets', "", 'addpets');
+                    }
+                    var pet = pets[index - 1];
+                    return card(
+                      context,
+                      pet['imageUrl'],
+                      'url',
+                      pet['name'],
+                      pet['name']
+                       // Route is not specified, add if needed
+                    );
+                  },
+                  childCount: pets.length + 1, // One extra for the AddPets card
+                ),
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
       bottomNavigationBar: BottomNavbar(
         currentIndex: _selectedIndex,
