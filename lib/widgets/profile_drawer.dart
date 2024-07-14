@@ -120,6 +120,14 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
               GoRouter.of(context).go('/posts');
             },
           ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Sign Out'),
+            onTap: () {
+              Navigator.of(context).pop();
+              GoRouter.of(context).go('/signin');
+            },
+          )
         ],
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
@@ -43,6 +45,30 @@ class FirestoreService {
         'username': userName,
         'timestamp': timestamp,
       });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> addLike(String postId, String? userName) async {
+    try {
+      DocumentSnapshot ds =
+          await _firestore.collection('posts').doc(postId).get();
+
+      List<dynamic> arr = ds['likes'];
+
+      if (arr.contains(userName)) {
+        arr.remove(userName);
+      } else {
+        arr.add(userName!);
+      }
+      await _firestore.collection('posts').doc(postId).set({
+        'imageUrl': ds['imageUrl'],
+        'post': ds['post'],
+        'poster': ds['poster'],
+        'timestamp': ds['timestamp'],
+        'likes': arr
+        });
     } catch (e) {
       print(e);
     }
