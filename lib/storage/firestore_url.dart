@@ -19,12 +19,14 @@ class FirestoreService {
 
   Future<void> addPost(String? text, String? imageUrl, DateTime timestamp,
       int likes, String? user) async {
+    
     try {
+      List<dynamic> arr = [];
       await _postsCollection.add({
         'post': text,
         'poster': user,
         'imageUrl': imageUrl,
-        'likes': likes,
+        'likes': arr,
         'timestamp': timestamp,
       });
     } catch (e) {
@@ -68,7 +70,7 @@ class FirestoreService {
         'poster': ds['poster'],
         'timestamp': ds['timestamp'],
         'likes': arr
-        });
+      });
     } catch (e) {
       print(e);
     }
