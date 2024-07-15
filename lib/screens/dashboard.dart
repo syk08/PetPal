@@ -358,7 +358,6 @@ class _DashboardState extends State<Dashboard> {
                                                     builder: (context) =>
                                                         MyMap(pet['name'])));
                                           },
-                                          
                                           icon: const Icon(Icons.pets),
                                           color: const Color.fromARGB(
                                               255, 157, 208, 232)),

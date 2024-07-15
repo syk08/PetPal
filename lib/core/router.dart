@@ -35,8 +35,8 @@ const String storeRoute = '/store';
 const String cartRoute = '/cart';
 const String profileRoute = '/profile';
 const String chatview = '/chat';
-const String profileChat= '/profileChat';
-const String bkash_pay='/bkashsub';
+const String profileChat = '/profileChat';
+const String bkash_pay = '/bkashsub';
 // Create a global key for the navigator
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -44,7 +44,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 // Define the GoRouter
 final GoRouter router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: homeRoute,
+  initialLocation: signin,
   debugLogDiagnostics: true,
   routes: <RouteBase>[
     GoRoute(
@@ -199,17 +199,17 @@ final GoRouter router = GoRouter(
       path: profileChat,
       builder: (BuildContext context, GoRouterState state) {
         final args = state.extra as Map<String, dynamic>;
-        
-         return Theme(
-      data: ThemeData.dark(useMaterial3: false),
-      child: ProfilePageWhatsapp(path: args['path'], name: args['name']),
-    );
+
+        return Theme(
+          data: ThemeData.dark(useMaterial3: false),
+          child: ProfilePageWhatsapp(path: args['path'], name: args['name']),
+        );
       },
     ),
     GoRoute(
       path: bkash_pay,
       builder: (BuildContext context, GoRouterState state) {
-        return bkashSub(title:"Bkash Payment");
+        return bkashSub(title: "Bkash Payment");
       },
     ),
   ],
